@@ -45,18 +45,23 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 
   if (strTopic == "rtf/main/chicken") {
+    Serial.println("Dropping Chicken");
+    Serial.println(value);
     digitalWrite(OUTPUT0, value);
   }
   if (strTopic == "rtf/main/balls") {
     Serial.println("Dropping Balls");
+    Serial.println(value);
     digitalWrite(OUTPUT1, value);
   }
   if (strTopic == "rtf/main/ladder") {
     Serial.println("Opening Ladder");
+    Serial.println(value);
     digitalWrite(OUTPUT2, value);
   }
   if (strTopic == "rtf/main/waffle") {
     Serial.println("Opening Waffle");
+    Serial.println(value);
     digitalWrite(OUTPUT3, value);
   }
 
