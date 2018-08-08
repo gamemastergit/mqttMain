@@ -3,8 +3,8 @@
 #include <PubSubClient.h>
 #include <ButtonDebounce.h>
 
-#define RELAY0 3
-#define RELAY1 2
+#define RELAY0 2
+#define RELAY1 3
 
 #define OUTPUT0 4
 #define OUTPUT1 5
@@ -52,7 +52,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   if (strTopic == "rtf/main/balls") {
     Serial.println("Dropping Balls");
     Serial.println(value);
-    digitalWrite(OUTPUT1, value);
+    digitalWrite(RELAY1, value);
   }
   if (strTopic == "rtf/main/ladder") {
     Serial.println("Opening Ladder");
@@ -104,6 +104,7 @@ void setup()
   pinMode(OUTPUT3, OUTPUT);
   pinMode(OUTPUT4, OUTPUT);
   pinMode(OUTPUT5, OUTPUT);
+  pinMode(RELAY1, OUTPUT);
   pinMode(INPUT0, INPUT);
   pinMode(INPUT1, INPUT);
   pinMode(INPUT2, INPUT);
