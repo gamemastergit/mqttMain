@@ -57,7 +57,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   if (strTopic == "rtf/main/ladder") {
     Serial.println("Opening Ladder");
     Serial.println(value);
-    digitalWrite(OUTPUT2, value);
+    digitalWrite(RELAY0, value);
   }
   if (strTopic == "rtf/main/waffle") {
     Serial.println("Opening Waffle");
