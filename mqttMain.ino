@@ -64,6 +64,26 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.println(value);
     digitalWrite(OUTPUT3, value);
   }
+   if (strTopic == "rtf/main/blacklight") {
+    Serial.println("Powering Blacklight");
+    Serial.println(value);
+    digitalWrite(OUTPUT1, value);
+  }
+    if (strTopic == "rtf/main/startcolor") {
+    Serial.println("Starting the color sensor");
+    Serial.println(value);
+    digitalWrite(OUTPUT2, value);
+  }
+    if (strTopic == "rtf/main/dump") {
+    Serial.println("Starting the dump");
+    Serial.println(value);
+    digitalWrite(OUTPUT3, value);
+  }
+    if (strTopic == "rtf/main/hotwheels") {
+    Serial.println("Starting the hotwheels");
+    Serial.println(value);
+    digitalWrite(OUTPUT4, value);
+  }
 
 }
 
@@ -84,8 +104,10 @@ void reconnect() {
       mqttClient.subscribe("rtf/main/balls");
       mqttClient.subscribe("rtf/main/ladder");
       mqttClient.subscribe("rtf/main/waffle");
-
-
+      mqttClient.subscribe("rtf/main/blacklight");
+      mqttClient.subscribe("rtf/main/startcolor");
+      mqttClient.subscribe("rtf/main/hotwheels");
+      mqttClient.subscribe("rtf/main/dump");
     } else {
       Serial.print("failed, rc=");
       Serial.println(" try again in 5 seconds");
@@ -191,8 +213,14 @@ void loop()
   }
   if (button4.state() != i4) {
 
-    //mqttClient.publish("rtf/start", s4);
-    i4 = button4.state();
+    if (button4.state()) {
+      Serial.println("Ball hands pushed");
+      mqttClient.publish("rtf/main/ballhands", "1");
+      i4 = button4.state();
+    } else {
+      mqttClient.publish("rtf/main/ballhands", "0");
+      i4 = button4.state();
+    }
 
   }
   if (button5.state() != i5) {
