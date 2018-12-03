@@ -3,22 +3,23 @@
 #include <PubSubClient.h>
 #include <ButtonDebounce.h>
 
-#define RELAY0 2
-#define RELAY1 3
+const int RELAY0 = 2;
+const int RELAY1 = 3;
 
-#define OUTPUT0 4
-#define OUTPUT1 5
-#define OUTPUT2 6
-#define OUTPUT3 7
-#define OUTPUT4 8
-#define OUTPUT5 9
+const int OUTPUT0 = 4;
+const int OUTPUT1 = 5;
+const int OUTPUT2 = 6;
+const int OUTPUT3 = 7;
+const int OUTPUT4 = 11;
+const int OUTPUT5 = 12;
 
-#define INPUT0 14
-#define INPUT1 15
-#define INPUT2 16
-#define INPUT3 17
-#define INPUT4 18
-#define INPUT5 19
+const int INPUT0 = A0;
+const int INPUT1 = A1;
+const int INPUT2 = A2;
+const int INPUT3 = A3;
+const int INPUT4 = A4;
+const int INPUT5 = A5;
+
 
 ButtonDebounce button0(INPUT0, 250);
 ButtonDebounce button1(INPUT1, 250);
@@ -77,7 +78,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     if (strTopic == "rtf/main/dump") {
     Serial.println("Starting the dump");
     Serial.println(value);
-    digitalWrite(OUTPUT3, value);
+    digitalWrite(OUTPUT5, value);
   }
     if (strTopic == "rtf/main/hotwheels") {
     Serial.println("Starting the hotwheels");
