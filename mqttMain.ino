@@ -3,22 +3,7 @@
 #include <PubSubClient.h>
 #include <ButtonDebounce.h>
 
-const int RELAY0 = 2;
-const int RELAY1 = 3;
-
-const int OUTPUT0 = 4;
-const int OUTPUT1 = 5;
-const int OUTPUT2 = 6;
-const int OUTPUT3 = 7;
-const int OUTPUT4 = 11;
-const int OUTPUT5 = 12;
-
-const int INPUT0 = A0;
-const int INPUT1 = A1;
-const int INPUT2 = A2;
-const int INPUT3 = A3;
-const int INPUT4 = A4;
-const int INPUT5 = A5;
+#include "PinMap.h"
 
 
 ButtonDebounce button0(INPUT0, 250);
