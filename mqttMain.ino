@@ -3,8 +3,9 @@
 #include <PubSubClient.h>
 #include <ButtonDebounce.h>
 
-const int RELAY0 = 2;
-const int RELAY1 = 3;
+
+const int RELAY0 = 3;
+const int RELAY1 = 2;
 
 const int OUTPUT0 = 4;
 const int OUTPUT1 = 5;
@@ -32,9 +33,9 @@ ButtonDebounce button5(INPUT5, 250);
 
 #define HALL 6
 
-byte mac[]    = {  0xDE, 0xEE, 0xBA, 0xBA, 0xFE, 0xEE };
-IPAddress ip(192, 168, 1, 149);
-IPAddress server(192, 168, 1, 163);
+byte mac[]    = {  0xDE, 0xEF, 0xAA, 0xBD, 0xFE, 0xEE };
+IPAddress ip(192, 168, 1, 166);
+IPAddress server(192, 168, 1, 101);
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println("Got a message!");
@@ -44,7 +45,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
   int value = s.toInt();
 
 
-
+  if (strTopic == "rtf/main/simon") {
+    Serial.println("Turning simon on");
+    Serial.println(value);
+    digitalWrite(OUTPUT3, value);
+  }
   if (strTopic == "rtf/main/chicken") {
     Serial.println("Dropping Chicken");
     Serial.println(value);
@@ -65,16 +70,16 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.println(value);
     digitalWrite(OUTPUT3, value);
   }
-   if (strTopic == "rtf/main/blacklight") {
-    Serial.println("Powering Blacklight");
+   if (strTopic == "rtf/main/beaconLight") {
+    Serial.println("Powering beaconLight");
     Serial.println(value);
     digitalWrite(OUTPUT1, value);
   }
-    if (strTopic == "rtf/main/startcolor") {
+    /*if (strTopic == "rtf/main/startcolor") {
     Serial.println("Starting the color sensor");
     Serial.println(value);
     digitalWrite(OUTPUT2, value);
-  }
+  }*/
     if (strTopic == "rtf/main/dump") {
     Serial.println("Starting the dump");
     Serial.println(value);
@@ -96,7 +101,7 @@ void reconnect() {
   while (!mqttClient.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (mqttClient.connect("arduinoClient")) {
+    if (mqttClient.connect("FactoryController")) {
       Serial.println("connected");
       // Once connected, publish an announcement...
 
@@ -105,12 +110,18 @@ void reconnect() {
       mqttClient.subscribe("rtf/main/balls");
       mqttClient.subscribe("rtf/main/ladder");
       mqttClient.subscribe("rtf/main/waffle");
-      mqttClient.subscribe("rtf/main/blacklight");
+      mqttClient.subscribe("rtf/main/beaconLight");
       mqttClient.subscribe("rtf/main/startcolor");
       mqttClient.subscribe("rtf/main/hotwheels");
       mqttClient.subscribe("rtf/main/dump");
+      mqttClient.subscribe("serverRoomBAC/get/input2");
+      mqttClient.subscribe("rtf/main/simon");
     } else {
       Serial.print("failed, rc=");
+      digitalWrite(LED, HIGH);
+      delay(500);
+      digitalWrite(LED, LOW);
+      Ethernet.begin(mac, ip);
       Serial.println(" try again in 5 seconds");
       // Wait 5 seconds before retrying
       delay(5000);
@@ -127,6 +138,7 @@ void setup()
   pinMode(OUTPUT3, OUTPUT);
   pinMode(OUTPUT4, OUTPUT);
   pinMode(OUTPUT5, OUTPUT);
+  pinMode(RELAY0, OUTPUT);
   pinMode(RELAY1, OUTPUT);
   pinMode(INPUT0, INPUT);
   pinMode(INPUT1, INPUT);
@@ -134,7 +146,8 @@ void setup()
   pinMode(INPUT3, INPUT);
   pinMode(INPUT4, INPUT);
   pinMode(INPUT5, INPUT);
-  digitalWrite(OUTPUT0, HIGH);
+  pinMode(LED, OUTPUT);
+  //digitalWrite(OUTPUT2, HIGH);
 
 
   Ethernet.begin(mac, ip);
@@ -194,6 +207,7 @@ void loop()
     if (button2.state()) {
       Serial.println("Color Puzzle Completed");
       mqttClient.publish("rtf/main/color", "1");
+      mqttClient.publish("serverRoomBAC/set/output3", "1");
       i2 = button2.state();
     } else {
       mqttClient.publish("rtf/main/color", "0");
@@ -226,10 +240,13 @@ void loop()
   }
   if (button5.state() != i5) {
 
-    //mqttClient.publish("rtf/start", s5);
-    i5 = button5.state();
-
+    if (button5.state()) {
+      Serial.println("Simon puzzle completed... Game ending");
+      mqttClient.publish("rtf/main/endGame", "1");
+      i5 = button5.state();
+    } else {
+      mqttClient.publish("rtf/main/endGame", "0");
+      i5 = button5.state();
+    }
   }
-
-
 }
